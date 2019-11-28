@@ -15,7 +15,6 @@ p = 15;                 % Número de coeficientes del filtro LPC
 
 output_file_id = fopen(filenameInputUncompressed, 'r');
 input = fread(input_file_id, 'ubit8');
-%input = [116; 117; 116; 117; 118 ;116 ;117 ;118 ;119; 120; 116; 117];
 fclose(input_file_id);
 
 end
