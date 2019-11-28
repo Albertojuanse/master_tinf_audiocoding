@@ -13,4 +13,9 @@ p = 15;                 % Número de coeficientes del filtro LPC
 % Análisis LPC a corto plazo. Ver ayuda de la función analiza_lpc_error
 [errores, coeficientes,tail,maxs] = analiza_lpc_error(signal, duracion_trama,solapamiento, p, fs);
 
+output_file_id = fopen(filenameInputUncompressed, 'r');
+input = fread(input_file_id, 'ubit8');
+%input = [116; 117; 116; 117; 118 ;116 ;117 ;118 ;119; 120; 116; 117];
+fclose(input_file_id);
+
 end
