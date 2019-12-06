@@ -36,7 +36,7 @@ numero_de_filas_errores = size(errores_cuantizados,1);
 numero_de_columnas_errores = size(errores_cuantizados,2);
 numero_de_filas_coeficientes = size(coeficientes_cuantizados,1);
 numero_de_columnas_coeficientes = size(coeficientes_cuantizados,2);
-% Numero de bits para codificar estas cantidades
+% Numero de bits `para codificar estas cantidades
 numero_de_bits_del_numero_de_filas_errores = ceil(log2(numero_de_filas_errores));
 numero_de_bits_del_numero_de_coeficientes_errores = ceil(log2(numero_de_columnas_errores));
 numero_de_bits_del_numero_de_filas_coeficientes = ceil(log2(numero_de_filas_coeficientes));
@@ -61,8 +61,9 @@ numero_de_bits_minimo_simbolos_coeficientes = ceil(log2(numero_de_coeficientes_d
 %% Guardado de la cabecera
 output_file_id = fopen(filenameOutputCompressed, 'a');
 
-% En cabecera se guardan con sendos bytes con el número de bits para
-% descodificar los errores y los coeficientes
+% En cabecera se guardan con dos primeros bit el número de bits usados en
+% la cuantificación de los errores y los coeficientes
+fwrite(output_file_id, bits_cuantizacionbits_cuantizacion_errorese(output_file_id, bits_cuantizacion codescodificar los errores y los coeficientes
 fwrite(output_file_id, numero_de_bits_minimo_errores, 'ubit8');
 fwrite(output_file_id, numero_de_bits_minimo_coeficientes, 'ubit8');
 precision_errores = strcat('ubit',num2str(numero_de_bits_minimo_errores));
