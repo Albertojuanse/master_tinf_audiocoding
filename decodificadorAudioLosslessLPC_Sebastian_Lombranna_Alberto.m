@@ -7,8 +7,8 @@ output_file_id = fopen(filenameOutputCompressed, 'a');
 
 % En cabecera se guardan con dos primeros bit el número de bits usados en
 % la cuantificación de los errores y los coeficientes
-bits_cuantizacion_errores = fwrite(output_file_id, 1, 'ubit8');
-bits_cuantizacion_coeficientes = fwrite(output_file_id, 1, 'ubit8');
+bits_cuantizacion_errores = fread(output_file_id, 1, 'ubit8');
+bits_cuantizacion_coeficientes = fread(output_file_id, 1, 'ubit8');
 
 % Se leen de sendos bytes con el número de bits para descodificar los 
 % errores y los coeficientes.
@@ -30,10 +30,10 @@ precision_numero_de_columnas_coeficientes = strcat('ubit',num2str(numero_de_bits
 
 % Se recupera el número de filas y columnas de errores y coeficientes que hay
 % usando la precision calculada.
-numero_de_filas_errores = fwrite(output_file_id, 1, precision_numero_de_filas_errores);
-numero_de_columnas_errores = fwrite(output_file_id, 1, precision_numero_de_columnas_errores);
-numero_de_filas_coeficientes = fwrite(output_file_id, 1, precision_numero_de_filas_coeficientes);
-numero_de_columnas_coeficientes = fwrite(output_file_id, 1, precision_numero_de_columnas_coeficientes);
+numero_de_filas_errores = fread(output_file_id, 1, precision_numero_de_filas_errores);
+numero_de_columnas_errores = fread(output_file_id, 1, precision_numero_de_columnas_errores);
+numero_de_filas_coeficientes = fread(output_file_id, 1, precision_numero_de_filas_coeficientes);
+numero_de_columnas_coeficientes = fread(output_file_id, 1, precision_numero_de_columnas_coeficientes);
 
 %% Lectura de la información
 errores_cuantizados = zeros(numero_de_filas_errores, numero_de_columnas_errores);
