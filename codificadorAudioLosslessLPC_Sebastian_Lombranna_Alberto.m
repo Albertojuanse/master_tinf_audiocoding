@@ -81,11 +81,12 @@ precision_numero_de_columnas_coeficientes = strcat('ubit',num2str(numero_de_bits
 
 % Se codifica el número de filas y columnas de errores y coeficientes que hay usando la
 % precision calculada
-fwrite(output_file_id, numero_de_bits_del_numero_de_filas_errores, precision_numero_de_filas_errores);
-fwrite(output_file_id, numero_de_bits_del_numero_de_coeficientes_errores, precision_numero_de_columnas_errores);
-fwrite(output_file_id, numero_de_bits_del_numero_de_filas_coeficientes, precision_numero_de_filas_coeficientes);
-fwrite(output_file_id, numero_de_bits_del_numero_de_coeficientes_coeficientes, precision_numero_de_columnas_coeficientes);
+fwrite(output_file_id, numero_de_filas_errores, precision_numero_de_filas_errores);
+fwrite(output_file_id, numero_de_columnas_errores, precision_numero_de_columnas_errores);
+fwrite(output_file_id, numero_de_filas_coeficientes, precision_numero_de_filas_coeficientes);
+fwrite(output_file_id, numero_de_columnas_coeficientes, precision_numero_de_columnas_coeficientes);
 
+%% Guardado de la información
 % Se guardan los errores y coeficientes fila por fila
 for i_fila = 1:numero_de_filas_errores
     for i_columna = 1:numero_de_columnas_errores
