@@ -1,4 +1,4 @@
-function codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(audioWavFilenameInputUncompressed,filenameOutputCompressed)
+function [signal] = codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(audioWavFilenameInputUncompressed,filenameOutputCompressed)
 %CODIFICADORAUDIOLOSSLESSLPC_SEBASTIAN_LOMBRANNA_ALBERTO This coder implements a LPC
 %lossless coding algorithm for audio
 
@@ -63,7 +63,11 @@ output_file_id = fopen(filenameOutputCompressed, 'a');
 
 % En cabecera se guardan con dos primeros bit el número de bits usados en
 % la cuantificación de los errores y los coeficientes
-fwrite(output_file_id, bits_cuantizacionbits_cuantizacion_errorese(output_file_id, bits_cuantizacion codescodificar los errores y los coeficientes
+fread(output_file_id, bits_cuantizacion_errores, 'ubit8');
+fread(output_file_id, bits_cuantizacion_coeficientes, 'ubit8')
+
+% Se guardan en sendos bytes con el número de bits para descodificar los 
+% errores y los coeficientes.
 fwrite(output_file_id, numero_de_bits_minimo_errores, 'ubit8');
 fwrite(output_file_id, numero_de_bits_minimo_coeficientes, 'ubit8');
 precision_errores = strcat('ubit',num2str(numero_de_bits_minimo_errores));
