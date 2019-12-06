@@ -63,8 +63,8 @@ output_file_id = fopen(filenameOutputCompressed, 'a');
 
 % En cabecera se guardan con dos primeros bit el número de bits usados en
 % la cuantificación de los errores y los coeficientes
-fread(output_file_id, bits_cuantizacion_errores, 'ubit8');
-fread(output_file_id, bits_cuantizacion_coeficientes, 'ubit8')
+fwrite(output_file_id, bits_cuantizacion_errores, 'ubit8');
+fwrite(output_file_id, bits_cuantizacion_coeficientes, 'ubit8');
 
 % Se guardan en sendos bytes con el número de bits para descodificar los 
 % errores y los coeficientes.
@@ -103,6 +103,7 @@ for i_fila = 1:numero_de_filas_coeficientes
         fwrite(output_file_id, coeficientes_cuantizados(i_fila,i_columna), precision_coeficientes);
     end
 end
+coeficientes_cuantizados(:,3615)
 
 % Se termina con dos float para el valor de tail y el de maxs
 fwrite(output_file_id, tail, 'float32');
