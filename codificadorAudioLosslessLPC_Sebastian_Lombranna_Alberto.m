@@ -32,6 +32,7 @@ exponente_cuantizacion_errores = 10;
 exponente_cuantizacion_coeficientes = 10;
 errores_cuantizados = errores*(10^exponente_cuantizacion_errores);
 coeficientes_cuantizados = coeficientes*(10^exponente_cuantizacion_coeficientes);
+maxs_cuantizado = maxs*(10^exponente_cuantizacion_errores);
 
 
 %% Análisis del audio
@@ -54,6 +55,7 @@ numero_de_coeficientes_distintos = size(unique(coeficientes_cuantizados),1);
 % Número de bits mínimo para guardar los valores; 1 más por el signo
 numero_de_bits_minimo_errores = ceil(log2(abs(maximo_error))) + 1;
 numero_de_bits_minimo_coeficientes = ceil(log2(abs(maximo_coeficiente))) + 1;
+numero_de_bits_minimo_maxs = ceil(log2(abs(maxs_cuantizado))) + 1;
 % Número de bits mínimo para guardar los símbolos que codifiquen los
 % valores
 numero_de_bits_minimo_simbolos_errores = ceil(log2(numero_de_errores_distintos)) + 1;
@@ -74,8 +76,10 @@ fwrite(output_file_id, exponente_cuantizacion_coeficientes, 'ubit8');
 % errores y los coeficientes.
 fwrite(output_file_id, numero_de_bits_minimo_errores, 'ubit8');
 fwrite(output_file_id, numero_de_bits_minimo_coeficientes, 'ubit8');
+fwrite(output_file_id, numero_de_bits_minimo_maxs, 'ubit8');
 precision_errores = strcat('bit',num2str(numero_de_bits_minimo_errores));
 precision_coeficientes = strcat('bit',num2str(numero_de_bits_minimo_coeficientes));
+precision_maxs = strcat('bit',num2str(numero_de_bits_minimo_maxs));
 
 % Se guarda con otros cuatro bytes el número de bits necesarios para
 % recuperar el número de valores que hay de cada.
@@ -107,13 +111,10 @@ for i_fila = 1:numero_de_filas_coeficientes
         fwrite(output_file_id, coeficientes_cuantizados(i_fila,i_columna), precision_coeficientes);
     end
 end
-coeficientes_cuantizados(:,3615)
 
 % Se termina con dos float para el valor de tail y el de maxs
-tail
-maxs
-fwrite(output_file_id, tail, 'float32');
-fwrite(output_file_id, maxs, 'float32');
+fwrite(output_file_id, tail, 'bit32');
+fwrite(output_file_id, maxs_cuantizado, precision_maxs);
 % Se añade un byte de seguridad contra errores en la precisión
 fwrite(output_file_id, 0, 'ubit8');
 
