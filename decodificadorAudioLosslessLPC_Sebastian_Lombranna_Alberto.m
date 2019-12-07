@@ -61,6 +61,7 @@ end
 % Se recuperan con dos float para el valor de tail y el de maxs
 tail = fread(input_file_id, 1, 'bit32');
 maxs_cuantizado = fread(input_file_id, 1, precision_maxs);
+fs = fwrite(input_file_id, 1, 'bit32');
 
 fclose(input_file_id);
 

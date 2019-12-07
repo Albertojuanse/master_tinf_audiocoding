@@ -115,6 +115,7 @@ end
 % Se termina con dos float para el valor de tail y el de maxs
 fwrite(output_file_id, tail, 'bit32');
 fwrite(output_file_id, maxs_cuantizado, precision_maxs);
+fwrite(output_file_id, fs, 'bit32');
 % Se añade un byte de seguridad contra errores en la precisión
 fwrite(output_file_id, 0, 'ubit8');
 
