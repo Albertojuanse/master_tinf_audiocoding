@@ -73,10 +73,7 @@ maxs = maxs_cuantizado/(10^exponente_cuantizacion_errores);
 
 %% Síntesis LPC y reconstrucción de la señal de audio a partir de sus tramas
 % a corto plazo
-[outputSignal] = sintetiza_lpc_error(errores,coeficientes,solapamiento,tail,maxs); 
-
-%% Reproduce la señal de audio
-sound(outputSignal,fs);
+[outputSignal] = sintetiza_lpc_error(errores,coeficientes,solapamiento,tail,maxs);
 
 %% Escribe audio a fichero WAV PCM
 audiowrite(audioWavFilenameOuputUncompressed,outputSignal,fs);
