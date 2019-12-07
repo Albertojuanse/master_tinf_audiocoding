@@ -18,16 +18,20 @@ signal = signal_stereo(:,1);
 % Análisis LPC a corto plazo. Ver ayuda de la función analiza_lpc_error
 [errores, coeficientes,tail,maxs] = analiza_lpc_error(signal, duracion_trama,solapamiento, p, fs);
 
-%% Parámetros de la codificación
-bits_cuantizacion_errores = 12;
-bits_cuantizacion_coeficientes = 12;
-
 %% Cuantización de errores y coeficientes
-% Se cuantiza "en dos pasos"; en el codificador se multiplica por 
-% 2^number_bits_cuantizacion para obtener un entero al hacerle el floor
-% y se divide para volver al valor anterior en el decodificador.
-errores_cuantizados = floor(errores*(2^bits_cuantizacion_errores));
-coeficientes_cuantizados = floor(coeficientes*(2^bits_cuantizacion_coeficientes));
+% Sólo se puede guardar en máquina de forma fácil y directa enteros.
+% Se tiene que cometer un error cuadrático medio menor a 10^-1.
+% Así que se multiplica cada muestra por 10^10, de tal forma que la parte
+% entera contenga toda la información necesaria para reconstruir la señal
+% con ese error cuadrático medio. Al guardarla en máquina la parte negativa
+% se elimina, y por lo tanto existe una cuantización.
+% Se cuantiza "en dos pasos"; en el codificador se multiplica por dicho
+% valor para obtener un entero y se divide para volver al valor anterior en
+% el decodificador.
+exponente_cuantizacion_errores = 10;
+exponente_cuantizacion_coeficientes = 10;
+errores_cuantizados = errores*(10^exponente_cuantizacion_errores);
+coeficientes_cuantizados = coeficientes*(10^exponente_cuantizacion_coeficientes);
 
 
 %% Análisis del audio
@@ -36,11 +40,11 @@ numero_de_filas_errores = size(errores_cuantizados,1);
 numero_de_columnas_errores = size(errores_cuantizados,2);
 numero_de_filas_coeficientes = size(coeficientes_cuantizados,1);
 numero_de_columnas_coeficientes = size(coeficientes_cuantizados,2);
-% Numero de bits `para codificar estas cantidades
+% Numero de bits para codificar estas cantidades
 numero_de_bits_del_numero_de_filas_errores = ceil(log2(numero_de_filas_errores));
-numero_de_bits_del_numero_de_coeficientes_errores = ceil(log2(numero_de_columnas_errores));
+numero_de_bits_del_numero_de_columnas_errores = ceil(log2(numero_de_columnas_errores));
 numero_de_bits_del_numero_de_filas_coeficientes = ceil(log2(numero_de_filas_coeficientes));
-numero_de_bits_del_numero_de_coeficientes_coeficientes = ceil(log2(numero_de_columnas_coeficientes));
+numero_de_bits_del_numero_de_columnas_coeficientes = ceil(log2(numero_de_columnas_coeficientes));
 % Valores máximos
 maximo_error = max(max(errores_cuantizados));
 maximo_coeficiente = max(max(coeficientes_cuantizados));
@@ -48,8 +52,8 @@ maximo_coeficiente = max(max(coeficientes_cuantizados));
 numero_de_errores_distintos = size(unique(errores_cuantizados),1);
 numero_de_coeficientes_distintos = size(unique(coeficientes_cuantizados),1);
 % Número de bits mínimo para guardar los valores; 1 más por el signo
-numero_de_bits_minimo_errores = ceil(log2(maximo_error)) + 1;
-numero_de_bits_minimo_coeficientes = ceil(log2(maximo_coeficiente)) + 1;
+numero_de_bits_minimo_errores = ceil(log2(abs(maximo_error))) + 1;
+numero_de_bits_minimo_coeficientes = ceil(log2(abs(maximo_coeficiente))) + 1;
 % Número de bits mínimo para guardar los símbolos que codifiquen los
 % valores
 numero_de_bits_minimo_simbolos_errores = ceil(log2(numero_de_errores_distintos)) + 1;
@@ -61,28 +65,28 @@ numero_de_bits_minimo_simbolos_coeficientes = ceil(log2(numero_de_coeficientes_d
 %% Guardado de la cabecera
 output_file_id = fopen(filenameOutputCompressed, 'a');
 
-% En cabecera se guardan con dos primeros bit el número de bits usados en
-% la cuantificación de los errores y los coeficientes
-fwrite(output_file_id, bits_cuantizacion_errores, 'ubit8');
-fwrite(output_file_id, bits_cuantizacion_coeficientes, 'ubit8');
+% En cabecera se guardan con dos primeros bit el exponente usado en la 
+% cuantificación de los errores y los coeficientes
+fwrite(output_file_id, exponente_cuantizacion_errores, 'ubit8');
+fwrite(output_file_id, exponente_cuantizacion_coeficientes, 'ubit8');
 
 % Se guardan en sendos bytes con el número de bits para descodificar los 
 % errores y los coeficientes.
 fwrite(output_file_id, numero_de_bits_minimo_errores, 'ubit8');
 fwrite(output_file_id, numero_de_bits_minimo_coeficientes, 'ubit8');
-precision_errores = strcat('ubit',num2str(numero_de_bits_minimo_errores));
-precision_coeficientes = strcat('ubit',num2str(numero_de_bits_minimo_coeficientes));
+precision_errores = strcat('bit',num2str(numero_de_bits_minimo_errores));
+precision_coeficientes = strcat('bit',num2str(numero_de_bits_minimo_coeficientes));
 
 % Se guarda con otros cuatro bytes el número de bits necesarios para
 % recuperar el número de valores que hay de cada.
 fwrite(output_file_id, numero_de_bits_del_numero_de_filas_errores, 'ubit8');
-fwrite(output_file_id, numero_de_bits_del_numero_de_coeficientes_errores, 'ubit8');
+fwrite(output_file_id, numero_de_bits_del_numero_de_columnas_errores, 'ubit8');
 fwrite(output_file_id, numero_de_bits_del_numero_de_filas_coeficientes, 'ubit8');
-fwrite(output_file_id, numero_de_bits_del_numero_de_coeficientes_coeficientes, 'ubit8');
+fwrite(output_file_id, numero_de_bits_del_numero_de_columnas_coeficientes, 'ubit8');
 precision_numero_de_filas_errores = strcat('ubit',num2str(numero_de_bits_del_numero_de_filas_errores));
-precision_numero_de_columnas_errores = strcat('ubit',num2str(numero_de_bits_del_numero_de_coeficientes_errores));
+precision_numero_de_columnas_errores = strcat('ubit',num2str(numero_de_bits_del_numero_de_columnas_errores));
 precision_numero_de_filas_coeficientes = strcat('ubit',num2str(numero_de_bits_del_numero_de_filas_coeficientes));
-precision_numero_de_columnas_coeficientes = strcat('ubit',num2str(numero_de_bits_del_numero_de_coeficientes_coeficientes));
+precision_numero_de_columnas_coeficientes = strcat('ubit',num2str(numero_de_bits_del_numero_de_columnas_coeficientes));
 
 % Se codifica el número de filas y columnas de errores y coeficientes que hay usando la
 % precision calculada
@@ -106,6 +110,8 @@ end
 coeficientes_cuantizados(:,3615)
 
 % Se termina con dos float para el valor de tail y el de maxs
+tail
+maxs
 fwrite(output_file_id, tail, 'float32');
 fwrite(output_file_id, maxs, 'float32');
 % Se añade un byte de seguridad contra errores en la precisión
