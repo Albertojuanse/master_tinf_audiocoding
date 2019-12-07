@@ -1,4 +1,4 @@
-function [outputSignal] = decodificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(audioWavFilenameInputUncompressed,filenameOutputCompressed)
+function [outputSignal] = decodificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(filenameInputCompressed,audioWavFilenameOuputUncompressed)
 %DECODIFICADORAUDIOLOSSLESSLPC_SEBASTIAN_LOMBRANNA_ALBERTO This decoder implements a LPC
 %lossless coding algorithm for audio
 
@@ -8,7 +8,7 @@ solapamiento = 0;       % Tanto por uno de solapamiento de ventanas
 p = 15;                 % Número de coeficientes del filtro LPC
 
 %% Lectura de la cabecera
-input_file_id = fopen(audioWavFilenameInputUncompressed, 'r');
+input_file_id = fopen(filenameInputCompressed, 'r');
 
 % En cabecera se guardan con dos primeros bit el exponente usado en la 
 % cuantificación de los errores y los coeficientes
@@ -79,6 +79,6 @@ maxs = maxs_cuantizado/(10^exponente_cuantizacion_errores);
 % sound(outputSignal,fs);
 
 %% Escribe audio a fichero WAV PCM
-audiowrite('baselineAutputAudioFile.wav',outputSignal,fs);
+audiowrite(audioWavFilenameOuputUncompressed,outputSignal,fs);
 
 end
