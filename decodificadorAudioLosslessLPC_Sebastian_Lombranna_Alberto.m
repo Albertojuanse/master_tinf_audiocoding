@@ -61,7 +61,7 @@ end
 % Se recuperan con dos float para el valor de tail y el de maxs
 tail = fread(input_file_id, 1, 'bit32');
 maxs_cuantizado = fread(input_file_id, 1, precision_maxs);
-fs = fwrite(input_file_id, 1, 'bit32');
+fs = fread(input_file_id, 1, 'bit32');
 
 fclose(input_file_id);
 
@@ -76,7 +76,7 @@ maxs = maxs_cuantizado/(10^exponente_cuantizacion_errores);
 [outputSignal] = sintetiza_lpc_error(errores,coeficientes,solapamiento,tail,maxs); 
 
 %% Reproduce la señal de audio
-% sound(outputSignal,fs);
+sound(outputSignal,fs);
 
 %% Escribe audio a fichero WAV PCM
 audiowrite(audioWavFilenameOuputUncompressed,outputSignal,fs);
