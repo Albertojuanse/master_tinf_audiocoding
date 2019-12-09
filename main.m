@@ -21,7 +21,7 @@ outputSignal = decodificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto('coder_
 tiempo_decodificador = toc
 
 accumulation = 0;
-for i_sample = 1:size(1,signal)
+for i_sample = 1:size(signal,1)
     accumulation = accumulation + (outputSignal(1,i_sample) - signal(i_sample))*(outputSignal(1,i_sample) - signal(i_sample));
 end
-ECM = accumulation/size(1,signal)
+ECM = accumulation/size(signal,1)

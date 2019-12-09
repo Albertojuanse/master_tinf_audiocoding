@@ -1,11 +1,11 @@
-function [signal] = codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(audioWavFilenameInputUncompressed,filenameOutputCompressed, duracion_trama, p, exponente_cuantizacion_errores, exponente_cuantizacion_coeficientes)
+function [signal] = codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(audioWavFilenameInputUncompressed,filenameOutputCompressed)
 %CODIFICADORAUDIOLOSSLESSLPC_SEBASTIAN_LOMBRANNA_ALBERTO This coder implements a LPC
 %lossless coding algorithm for audio
 
 %% Parámetros de la codificación LPC a corto plazo
-%duracion_trama = 0.01;  % Duración de una trama en segundos 
+duracion_trama = 0.02;  % Duración de una trama en segundos 
 solapamiento = 0;       % Tanto por uno de solapamiento de ventanas
-%p = 5;                  % Número de coeficientes del filtro LPC
+p = 5;                  % Número de coeficientes del filtro LPC
 % menor duracion_trama para menos MMS
 % menor bits para tamaño
 % hacer el huffman a todo el archivo y no por ventana
@@ -28,11 +28,11 @@ signal = signal_stereo(:,1);
 % Se cuantiza "en dos pasos"; en el codificador se multiplica por dicho
 % valor para obtener un entero y se divide para volver al valor anterior en
 % el decodificador.
-%exponente_cuantizacion_errores = 5;
-%exponente_cuantizacion_coeficientes = 4;
-errores_cuantizados = errores*(10^exponente_cuantizacion_errores);
-coeficientes_cuantizados = coeficientes*(10^exponente_cuantizacion_coeficientes);
-maxs_cuantizado = maxs*(10^exponente_cuantizacion_errores);
+exponente_cuantizacion_errores = 5;
+exponente_cuantizacion_coeficientes = 4;
+errores_cuantizados = round(errores*(10^exponente_cuantizacion_errores));
+coeficientes_cuantizados = round(coeficientes*(10^exponente_cuantizacion_coeficientes));
+maxs_cuantizado = round(maxs*(10^exponente_cuantizacion_errores));
 
 
 %% Análisis del audio
