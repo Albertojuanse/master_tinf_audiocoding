@@ -3,7 +3,7 @@ function [signal] = codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto(audi
 %lossless coding algorithm for audio
 
 %% Parámetros de la codificación LPC a corto plazo
-duracion_trama = 0.02;  % Duración de una trama en segundos 
+duracion_trama = 0.001; % Duración de una trama en segundos 
 solapamiento = 0;       % Tanto por uno de solapamiento de ventanas
 p = 5;                  % Número de coeficientes del filtro LPC
 % menor duracion_trama para menos MMS
@@ -28,8 +28,8 @@ signal = signal_stereo(:,1);
 % Se cuantiza "en dos pasos"; en el codificador se multiplica por dicho
 % valor para obtener un entero y se divide para volver al valor anterior en
 % el decodificador.
-exponente_cuantizacion_errores = 5;
-exponente_cuantizacion_coeficientes = 4;
+exponente_cuantizacion_errores = 3.5;
+exponente_cuantizacion_coeficientes = 3;
 errores_cuantizados = round(errores*(10^exponente_cuantizacion_errores));
 coeficientes_cuantizados = round(coeficientes*(10^exponente_cuantizacion_coeficientes));
 maxs_cuantizado = round(maxs*(10^exponente_cuantizacion_errores));
@@ -69,8 +69,8 @@ output_file_id = fopen(filenameOutputCompressed, 'a');
 
 % En cabecera se guardan con dos primeros bit el exponente usado en la 
 % cuantificación de los errores y los coeficientes
-fwrite(output_file_id, exponente_cuantizacion_errores, 'ubit8');
-fwrite(output_file_id, exponente_cuantizacion_coeficientes, 'ubit8');
+fwrite(output_file_id, exponente_cuantizacion_errores, 'float');
+fwrite(output_file_id, exponente_cuantizacion_coeficientes, 'float');
 
 % Se guardan en sendos bytes con el número de bits para descodificar los 
 % errores y los coeficientes.

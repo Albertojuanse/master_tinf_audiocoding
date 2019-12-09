@@ -12,10 +12,55 @@ if solapamiento == 0
         a = coeficientes(:,i)';
     
         trama_recuperada = filter(1, [1 a], trama_error);
+        
+        trama_expandida = compand(trama_recuperada,87.6,maxs,'a/expander');
+        
+        % Eliminación de valores por encima de 1
+        accumulado_positivo = 0; 
+        contador_positivo = 0;
+        accumulado_negativo = 0; 
+        contador_negativo = 0;
+        negativo = false;
+        positivo = false;
+     	for i_trama_expandida = 1:size(trama_expandida,2)
+            if trama_expandida(i_trama_expandida) < 1 && trama_expandida(i_trama_expandida) >= 0
+                accumulado_positivo = accumulado_positivo + trama_expandida(i_trama_expandida);
+                contador_positivo = contador_positivo + 1;
+            end   
+            if trama_expandida(i_trama_expandida) > -1 && trama_expandida(i_trama_expandida) < 0
+                accumulado_negativo = accumulado_negativo + trama_expandida(i_trama_expandida);
+                contador_negativo = contador_negativo + 1;
+            end
+            if trama_expandida(i_trama_expandida) >= 1
+                positivo = true;
+            end
+            if trama_expandida(i_trama_expandida) <= -1
+                negativo = true;
+            end
+            
+        end
+        if contador_negativo == 0 && contador_positivo == 0
+            if positivo
+                media = 0.5;
+            end
+            if negativo
+                media = 0.5;
+            end
+        end
+        if contador_negativo == 0 && contador_positivo ~= 0
+            media = accumulado_positivo/contador_positivo;
+        end
+        if contador_positivo == 0 && contador_negativo ~= 0
+            media = accumulado_negativo/contador_negativo;
+        end
+        for i_trama_expandida = 1:size(trama_expandida,2)
+            if abs(trama_expandida(i_trama_expandida)) > 1
+                trama_expandida(i_trama_expandida) = media;
+            end
+        end
     
         % Aplica el inverso de la ley A de compresi�n
-        output_signal((i-1)*len_trama+1:i*len_trama) = compand(trama_recuperada,87.6,maxs,'a/expander');
-    
+        output_signal((i-1)*len_trama+1:i*len_trama) = trama_expandida;
     
     end;
 else

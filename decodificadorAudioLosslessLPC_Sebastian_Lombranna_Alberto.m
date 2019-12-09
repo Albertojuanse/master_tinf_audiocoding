@@ -3,17 +3,17 @@ function [outputSignal] = decodificadorAudioLosslessLPC_Sebastian_Lombranna_Albe
 %lossless coding algorithm for audio
 
 %% Parámetros de la codificación LPC a corto plazo
-duracion_trama = 0.02;  % Duración de una trama en segundos 
+duracion_trama = 0.001; % Duración de una trama en segundos 
 solapamiento = 0;       % Tanto por uno de solapamiento de ventanas
-p = 15;                 % Número de coeficientes del filtro LPC
+p = 5;                  % Número de coeficientes del filtro LPC
 
 %% Lectura de la cabecera
 input_file_id = fopen(filenameInputCompressed, 'r');
 
 % En cabecera se guardan con dos primeros bit el exponente usado en la 
 % cuantificación de los errores y los coeficientes
-exponente_cuantizacion_errores = fread(input_file_id, 1, 'ubit8');
-exponente_cuantizacion_coeficientes = fread(input_file_id, 1, 'ubit8');
+exponente_cuantizacion_errores = fread(input_file_id, 1, 'float');
+exponente_cuantizacion_coeficientes = fread(input_file_id, 1, 'float');
 
 % Se leen de sendos bytes con el número de bits para descodificar los 
 % errores y los coeficientes.

@@ -2,13 +2,16 @@ clear all;
 delete coder_output;
 delete decoder_output.wav;
 
-id = fopen('input.wav', 'r');
+id = fopen('TheWorldtoMe_RosieDias.wav', 'r');
 [A, bytes_input] = fread(id, 'ubit8');
 bytes_input = bytes_input/2
 fclose(id);
 
 tic;
-signal = codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto('input.wav','coder_output');
+% 'Be Brave- WAV.wav'
+% 'input.wav'
+% 'TheWorldtoMe_RosieDias.wav'
+signal = codificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto('TheWorldtoMe_RosieDias.wav','coder_output');
 tiempo_codificador = toc
 
 id = fopen('coder_output', 'r');
@@ -21,7 +24,10 @@ outputSignal = decodificadorAudioLosslessLPC_Sebastian_Lombranna_Alberto('coder_
 tiempo_decodificador = toc
 
 accumulation = 0;
-for i_sample = 1:size(signal,1)
-    accumulation = accumulation + (outputSignal(1,i_sample) - signal(i_sample))*(outputSignal(1,i_sample) - signal(i_sample));
+for i_sample = 1:min(size(outputSignal,2),size(signal,1) )
+    if outputSignal(1,i_sample) > 1
+        outputSignal(1,i_sample)
+    end
+    accumulation = accumulation + (outputSignal(1,i_sample) - signal(i_sample,1))*(outputSignal(1,i_sample) - signal(i_sample,1));
 end
-ECM = accumulation/size(signal,1)
+ECM = accumulation/min(size(outputSignal,2),size(signal,1) )
