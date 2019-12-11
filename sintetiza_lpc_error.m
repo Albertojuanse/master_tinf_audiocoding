@@ -53,6 +53,11 @@ if solapamiento == 0
         if contador_positivo == 0 && contador_negativo ~= 0
             media = accumulado_negativo/contador_negativo;
         end
+        if contador_positivo ~= 0 && contador_negativo ~= 0
+            media_negativo = accumulado_negativo/contador_negativo;
+            media_positivo = accumulado_positivo/contador_positivo;
+            media = (media_positivo + media_negativo)/2;
+        end
         for i_trama_expandida = 1:size(trama_expandida,2)
             if abs(trama_expandida(i_trama_expandida)) > 1
                 trama_expandida(i_trama_expandida) = media;
